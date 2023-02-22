@@ -10,9 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amplifyframework.datastore.generated.model.TaskModel;
 import com.snur206.taskmaster.R;
 import com.snur206.taskmaster.activities.TaskDetails;
-import com.snur206.taskmaster.model.TaskModel;
 
 import java.util.List;
 
@@ -47,13 +47,13 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
         TextView taskFragNameView = holder.itemView.findViewById(R.id.TaskFragmentTextViewName);
         // TODO: Step 6-2: Refactor the rendering
         TaskModel taskTitle = taskModelsList.get(position);
-        taskFragNameView.setText((position + 1) + ". " + taskTitle.getTitle()
-        + "/n" + taskTitle.getDescription() + "/n" + taskTitle.getDate()
+        taskFragNameView.setText((position + 1) + ". "
+        + "/n" + taskTitle.getDescription()
         );
         View taskViewHolder = holder.itemView;
         taskViewHolder.setOnClickListener(v -> {
             Intent goToTaskDetailsIntent = new Intent(callingActivity, TaskDetails.class);
-            goToTaskDetailsIntent.putExtra(TASK_TITLE_TAG, taskTitle.getTitle());
+            goToTaskDetailsIntent.putExtra(TASK_TITLE_TAG, taskTitle.getName());
 //            goToTaskDetailsIntent.putExtra(TASK_BODY_TAG, taskBodyList);
             callingActivity.startActivity(goToTaskDetailsIntent);
         });
