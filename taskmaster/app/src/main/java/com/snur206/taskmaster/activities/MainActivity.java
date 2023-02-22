@@ -5,53 +5,62 @@ import static com.snur206.taskmaster.activities.UserSettingsActivity.USER_NAME_T
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amplifyframework.api.graphql.model.ModelQuery;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.TaskModel;
 import com.snur206.taskmaster.R;
 import com.snur206.taskmaster.adapter.TaskRecyclerViewAdapter;
-import com.snur206.taskmaster.database.TaskMasterDatabase;
-import com.snur206.taskmaster.model.TaskModel;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    TaskMasterDatabase taskMasterDatabase;
-    public static final String DATABASE_TITLE = "task_title";
-    List<TaskModel> taskModelsList = new ArrayList<>();
+    public static final String TAG = "mainActivity";
+
+    List<TaskModel> taskModelsList;
     TaskRecyclerViewAdapter adapter;
 
     //    public final String TAG = "MainActivity";
     public static final String TASK_INPUT_EXTRA_TAG = "userTask";
 
-    //  TODO: Step 1-1: Add a RecyclerView in the WSYIWYG editor
     @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
 
+        Amplify.API.query(
+                ModelQuery.list(TaskModel.class),
+                success -> {
+                    Log.i(TAG, "Task read successfully!");
+                    for (TaskModel databaseTaskModel : success.getData()) {
+                        taskModelsList.add(databaseTaskModel);
+                    }
+                },
+                failure -> Log.e(TAG, "FAILED to read task from the Datatbase")
 
-            // Builder pattern
-            taskMasterDatabase = Room.databaseBuilder(
-                    getApplicationContext(),
-                    TaskMasterDatabase.class,
-                    DATABASE_TITLE)
-                    .fallbackToDestructiveMigration() // If Room gets confused, it tosses your database; don't use this in production!
-                    .allowMainThreadQueries()
-                    .build();
-            taskModelsList = taskMasterDatabase.taskDao().findAll();
+        );
 
-            // Add Event Listener for clicking a button
-            // TODO: Step 1: Get a UI element by ID
+//             HARDCODED TEST for recyclerView
+//            taskModelsList = new ArrayList<>();
+//            TaskModel newTask = TaskModel.builder()
+//                    .name("Lab")
+//                    .description("Lab for AWS")
+//                    .state(TaskStateEnum.NEW)
+//                    .build();
+//            taskModelsList.add(newTask);
+
             Button addTaskButton = (Button) findViewById(R.id.mainActivityAddTaskBtn);
 
             addTaskButton.setOnClickListener(v -> {
@@ -67,36 +76,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(goToAllTaskFromIntent);
             });
 
-//            Button taskButtonOne = (Button)  findViewById(R.id.mainActivityTaskOneBtn);
-//
-//            taskButtonOne.setOnClickListener(v -> {
-//                String taskDetail = ((TextView) findViewById(R.id.mainActivityTaskOneBtn)).getText().toString();
-//                Intent goToTaskDetailFromIntent = new Intent(this, TaskDetails.class);
-//                goToTaskDetailFromIntent.putExtra(TASK_INPUT_EXTRA_TAG, taskDetail);
-//                startActivity(goToTaskDetailFromIntent);
-//            });
-
-//            Button taskButtonTwo = (Button)  findViewById(R.id.mainActivityTaskTwoBtn);
-//
-//            taskButtonTwo.setOnClickListener(v -> {
-//                String taskDetail = ((TextView) findViewById(R.id.mainActivityTaskTwoBtn)).getText().toString();
-//                Intent goToTaskDetailFromIntent = new Intent(this, TaskDetails.class);
-//                goToTaskDetailFromIntent.putExtra(TASK_INPUT_EXTRA_TAG, taskDetail);
-//
-//                startActivity(goToTaskDetailFromIntent);
-//            });
-
-//            Button taskButtonThree = (Button)  findViewById(R.id.mainActivityTaskThreeBtn);
-//
-//            taskButtonThree.setOnClickListener(v -> {
-//                String taskDetail = ((TextView) findViewById(R.id.mainActivityTaskThreeBtn)).getText().toString();
-//                Intent goToTaskDetailFromIntent = new Intent(this, TaskDetails.class);
-//                goToTaskDetailFromIntent.putExtra(TASK_INPUT_EXTRA_TAG, taskDetail);
-//
-//                startActivity(goToTaskDetailFromIntent);
-//            });
-
-
             ImageView settingsButton = (ImageView) findViewById(R.id.mainActivitySettingsImgView);
             settingsButton.setOnClickListener(v -> {
                 String userInput = ((EditText)findViewById(R.id.mainActivityUserInputEditText)).getText().toString();
@@ -105,21 +84,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(goToUserSettingsIntent);
             });
 
+
         setUpRecyclerView();
         }
 
-//  TODO: Step 1-2: Grab the RecylcerView
     public void setUpRecyclerView(){
-        // TODO: Step 2-2: Make some data items
-
-
+        taskModelsList = new ArrayList<>();
         RecyclerView taskModelRecyclerView = findViewById(R.id.MainActivityRecyclerViewTaskModel);
-//      TODO: Step 1-3: Set the layout manager of the RecyclerView to a LinearLayoutManager
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         taskModelRecyclerView.setLayoutManager(layoutManager);
-        // TODO: Step 1-5: Create and attach the RecyclerView.Adapter
-        // TODO: Step 2-3: Hand in some data items
-        // TODO: Step 3-2: Hand in the Activity context
         adapter = new TaskRecyclerViewAdapter(taskModelsList, this);
         taskModelRecyclerView.setAdapter(adapter);
 
@@ -129,12 +102,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Amplify.API.query(
+                ModelQuery.list(TaskModel.class),
+                success -> {
+                    taskModelsList.clear();
+                    Log.i(TAG, "Task read successfully!");
+                    for (TaskModel databaseTaskModel : success.getData()) {
+                        taskModelsList.add(databaseTaskModel);
+                    }
+                    runOnUiThread(() -> adapter.notifyDataSetChanged()); // since this runs asynchronously, the adapter may already have rendered, so we have to tell it to update
+                },
+                failure -> Log.e(TAG, "FAILED to read task from the Datatbase")
+        );
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         String username = preferences.getString(USER_NAME_TAG, "No Username");
         ((TextView)findViewById(R.id.mainActivityTaskMasterTextView)).setText(username);
-        taskModelsList.clear();
-        taskModelsList.addAll(taskMasterDatabase.taskDao().findAll());
+//        taskModelsList.clear();
+//        taskModelsList.addAll(taskMasterDatabase.taskDao().findAll());
 
         adapter.notifyDataSetChanged();
     }

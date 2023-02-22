@@ -32,3 +32,6 @@ The changes made where to get rid of the hardcoded RecyclerView and place a spin
 
 # Lab 31
 Didn't add anything new, already had tests made for each task that is on canvas for lab 31.
+
+# Lab 32
+Refactored code and using AWS Amplify for labs now.

@@ -19,20 +19,6 @@ public class TaskDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_details);
         consumeExtras();
-//        Intent callingIntent = getIntent();
-//        String userTaskString = null;
-//        if(callingIntent != null) {
-//            userTaskString = callingIntent.getStringExtra(MainActivity.TASK_INPUT_EXTRA_TAG);
-//            TextView userTaskTextView = (TextView)findViewById(R.id.taskDetailPage);
-//            if(userTaskString != null) {
-//                userTaskTextView.setText(userTaskString);
-//            } else {
-//                userTaskTextView.setText("No input");
-//            }
-//        }
-
-//        Button addTaskOneButton = (Button) findViewById(R.id.taskDetailsBtn);
-
     }
 
     public void consumeExtras(){
