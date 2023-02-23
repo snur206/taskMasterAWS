@@ -108,7 +108,13 @@ public class MainActivity extends AppCompatActivity {
                     taskModelsList.clear();
                     Log.i(TAG, "Task read successfully!");
                     for (TaskModel databaseTaskModel : success.getData()) {
-                        taskModelsList.add(databaseTaskModel);
+                        String selectedTeamName = "A";
+                        if(databaseTaskModel.getTeam() != null){
+                            if(databaseTaskModel.getTeam().getName().equals(selectedTeamName)) {
+                                taskModelsList.add(databaseTaskModel);
+                            }
+                        }
+
                     }
                     runOnUiThread(() -> adapter.notifyDataSetChanged()); // since this runs asynchronously, the adapter may already have rendered, so we have to tell it to update
                 },
@@ -121,6 +127,5 @@ public class MainActivity extends AppCompatActivity {
 //        taskModelsList.clear();
 //        taskModelsList.addAll(taskMasterDatabase.taskDao().findAll());
 
-        adapter.notifyDataSetChanged();
     }
 }

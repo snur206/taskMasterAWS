@@ -1,4 +1,73 @@
 # this is an auto generated file. This will be overwritten
+mutation CreateTeam(
+  $input: CreateTeamInput!
+  $condition: ModelTeamConditionInput
+) {
+  createTeam(input: $input, condition: $condition) {
+    id
+    name
+    taskModel {
+      items {
+        id
+        name
+        teamId
+        state
+        description
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+  }
+}
+mutation UpdateTeam(
+  $input: UpdateTeamInput!
+  $condition: ModelTeamConditionInput
+) {
+  updateTeam(input: $input, condition: $condition) {
+    id
+    name
+    taskModel {
+      items {
+        id
+        name
+        teamId
+        state
+        description
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+  }
+}
+mutation DeleteTeam(
+  $input: DeleteTeamInput!
+  $condition: ModelTeamConditionInput
+) {
+  deleteTeam(input: $input, condition: $condition) {
+    id
+    name
+    taskModel {
+      items {
+        id
+        name
+        teamId
+        state
+        description
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+  }
+}
 mutation CreateTaskModel(
   $input: CreateTaskModelInput!
   $condition: ModelTaskModelConditionInput
@@ -6,8 +75,18 @@ mutation CreateTaskModel(
   createTaskModel(input: $input, condition: $condition) {
     id
     name
+    teamId
     state
     description
+    team {
+      id
+      name
+      taskModel {
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
     createdAt
     updatedAt
   }
@@ -19,8 +98,18 @@ mutation UpdateTaskModel(
   updateTaskModel(input: $input, condition: $condition) {
     id
     name
+    teamId
     state
     description
+    team {
+      id
+      name
+      taskModel {
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
     createdAt
     updatedAt
   }
@@ -32,8 +121,18 @@ mutation DeleteTaskModel(
   deleteTaskModel(input: $input, condition: $condition) {
     id
     name
+    teamId
     state
     description
+    team {
+      id
+      name
+      taskModel {
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
     createdAt
     updatedAt
   }

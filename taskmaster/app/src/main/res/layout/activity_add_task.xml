@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="56dp"
-        android:layout_marginTop="368dp"
+        android:layout_marginTop="384dp"
         android:contentDescription="@string/addTaskBtn"
         android:text="@string/add_task"
         app:layout_constraintStart_toStartOf="parent"
@@ -109,9 +109,18 @@
     <Spinner
         android:id="@+id/taskStateSpinner"
         android:layout_width="409dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginBottom="320dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/AddTaskActivityTeamSpinner"
+        android:layout_width="409dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/addTaskActivityBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
