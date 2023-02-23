@@ -1,10 +1,80 @@
 # this is an auto generated file. This will be overwritten
+subscription OnCreateTeam($filter: ModelSubscriptionTeamFilterInput) {
+  onCreateTeam(filter: $filter) {
+    id
+    name
+    taskModel {
+      items {
+        id
+        name
+        teamId
+        state
+        description
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+  }
+}
+subscription OnUpdateTeam($filter: ModelSubscriptionTeamFilterInput) {
+  onUpdateTeam(filter: $filter) {
+    id
+    name
+    taskModel {
+      items {
+        id
+        name
+        teamId
+        state
+        description
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+  }
+}
+subscription OnDeleteTeam($filter: ModelSubscriptionTeamFilterInput) {
+  onDeleteTeam(filter: $filter) {
+    id
+    name
+    taskModel {
+      items {
+        id
+        name
+        teamId
+        state
+        description
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+  }
+}
 subscription OnCreateTaskModel($filter: ModelSubscriptionTaskModelFilterInput) {
   onCreateTaskModel(filter: $filter) {
     id
     name
+    teamId
     state
     description
+    team {
+      id
+      name
+      taskModel {
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
     createdAt
     updatedAt
   }
@@ -13,8 +83,18 @@ subscription OnUpdateTaskModel($filter: ModelSubscriptionTaskModelFilterInput) {
   onUpdateTaskModel(filter: $filter) {
     id
     name
+    teamId
     state
     description
+    team {
+      id
+      name
+      taskModel {
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
     createdAt
     updatedAt
   }
@@ -23,8 +103,18 @@ subscription OnDeleteTaskModel($filter: ModelSubscriptionTaskModelFilterInput) {
   onDeleteTaskModel(filter: $filter) {
     id
     name
+    teamId
     state
     description
+    team {
+      id
+      name
+      taskModel {
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
     createdAt
     updatedAt
   }
