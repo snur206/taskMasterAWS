@@ -31,5 +31,6 @@ public class TaskDetails extends AppCompatActivity {
         }
         ((TextView) findViewById(R.id.TaskDetailsTVTitle)).setText(taskTitle);
         ((TextView) findViewById(R.id.TaskDetailsTVBody)).setText(taskBody);
+//        ((TextView) findViewById(R.id.TaskDetailsTVState)).setText(taskState);
     }
 }

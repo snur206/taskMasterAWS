@@ -28,6 +28,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "mainActivity";
+    public static final String Select_Team_TAG = "selectTeam";
 
     List<TaskModel> taskModelsList;
     TaskRecyclerViewAdapter adapter;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                         taskModelsList.add(databaseTaskModel);
                     }
                 },
-                failure -> Log.e(TAG, "FAILED to read task from the Datatbase")
+                failure -> Log.e(TAG, "FAILED to read task from the Database" + failure)
 
         );
 
@@ -102,13 +103,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String selectedTeam = preferences.getString(Select_Team_TAG, "No team chosen");
+
         Amplify.API.query(
                 ModelQuery.list(TaskModel.class),
                 success -> {
                     taskModelsList.clear();
                     Log.i(TAG, "Task read successfully!");
                     for (TaskModel databaseTaskModel : success.getData()) {
-                        String selectedTeamName = "A";
+                        String selectedTeamName = selectedTeam;
                         if(databaseTaskModel.getTeam() != null){
                             if(databaseTaskModel.getTeam().getName().equals(selectedTeamName)) {
                                 taskModelsList.add(databaseTaskModel);
@@ -118,12 +122,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                     runOnUiThread(() -> adapter.notifyDataSetChanged()); // since this runs asynchronously, the adapter may already have rendered, so we have to tell it to update
                 },
-                failure -> Log.e(TAG, "FAILED to read task from the Datatbase")
+                failure -> Log.e(TAG, "FAILED to read task from the Database" + failure)
         );
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         String username = preferences.getString(USER_NAME_TAG, "No Username");
         ((TextView)findViewById(R.id.mainActivityTaskMasterTextView)).setText(username);
+        ((TextView)findViewById(R.id.mainActivityTaskMasterTextView)).setText(username);
+
 //        taskModelsList.clear();
 //        taskModelsList.addAll(taskMasterDatabase.taskDao().findAll());
 
