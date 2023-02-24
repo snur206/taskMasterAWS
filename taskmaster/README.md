@@ -40,3 +40,4 @@ Refactored code and using AWS Amplify for labs now.
 Able to select a team when adding a task and in the settings you select the team nd filter that task from the select team in the home page.
 ![Setting Team Select](screenshots/chooseTeam.png)
 ![Add Task Team Select](screenshots/selectTeamTask.png)
+![Filtered Task](screenshots/FilterTeamTask.png)
