@@ -20,6 +20,8 @@ import java.util.List;
 public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerViewAdapter.TaskViewHolder> {
     public static final String TASK_TITLE_TAG = "task_title";
     public static final String TASK_BODY_TAG = "task_body";
+    public static final String TASK_STATE_TAG = "task_state";
+
 
     // TODO: Step 3-2: Context callingActivity called at the top
     Context callingActivity;
@@ -47,14 +49,16 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
         TextView taskFragNameView = holder.itemView.findViewById(R.id.TaskFragmentTextViewName);
         // TODO: Step 6-2: Refactor the rendering
         TaskModel taskTitle = taskModelsList.get(position);
+        String taskState = String.valueOf((taskModelsList.get(position).getState()));
         taskFragNameView.setText((position + 1) + ". "
-        + "/n" + taskTitle.getDescription()
+        + " " + taskTitle.getDescription()
         );
         View taskViewHolder = holder.itemView;
         taskViewHolder.setOnClickListener(v -> {
             Intent goToTaskDetailsIntent = new Intent(callingActivity, TaskDetails.class);
             goToTaskDetailsIntent.putExtra(TASK_TITLE_TAG, taskTitle.getName());
 //            goToTaskDetailsIntent.putExtra(TASK_BODY_TAG, taskBodyList);
+            goToTaskDetailsIntent.putExtra(TASK_STATE_TAG, taskState);
             callingActivity.startActivity(goToTaskDetailsIntent);
         });
     }
