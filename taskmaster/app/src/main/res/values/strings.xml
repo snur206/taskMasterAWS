@@ -38,4 +38,5 @@
     <string name="taskFragOne">Task One</string>
     <string name="taskFragTV">Task Name</string>
     <string name="taskTitleTextView">Text View</string>
+    <string name="taskFragProgess">Task Progress</string>
 </resources>

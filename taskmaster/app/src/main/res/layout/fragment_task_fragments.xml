@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frameLayout"
-    android:layout_width="320dp"
-    android:layout_height="64dp"
+    android:layout_width="400dp"
+    android:layout_height="128dp"
     tools:context=".fragments.TaskFragments">
 
     <!-- TODO: Update blank fragment layout -->
 
     <TextView
         android:id="@+id/TaskFragmentTextViewName"
-        android:layout_width="64dp"
-        android:layout_height="32dp"
+        android:layout_width="88dp"
+        android:layout_height="48dp"
         android:layout_marginStart="40dp"
         android:layout_marginTop="16dp"
         android:text="@string/taskFragOne"
@@ -22,12 +22,22 @@
 
     <TextView
         android:id="@+id/TaskFragTVType"
-        android:layout_width="75dp"
-        android:layout_height="34dp"
-        android:layout_marginStart="168dp"
+        android:layout_width="88dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="164dp"
         android:layout_marginTop="16dp"
         android:text="@string/taskFragTV"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/TaskFragmentSpinner"
+        android:layout_width="88dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="40dp"
+        android:text="@string/taskFragProgess"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
