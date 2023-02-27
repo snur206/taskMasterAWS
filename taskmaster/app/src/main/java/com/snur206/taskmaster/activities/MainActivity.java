@@ -41,17 +41,19 @@ public class MainActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
 
-        Amplify.API.query(
-                ModelQuery.list(TaskModel.class),
-                success -> {
-                    Log.i(TAG, "Task read successfully!");
-                    for (TaskModel databaseTaskModel : success.getData()) {
-                        taskModelsList.add(databaseTaskModel);
-                    }
-                },
-                failure -> Log.e(TAG, "FAILED to read task from the Database" + failure)
 
-        );
+//        Amplify.API.query(
+//                ModelQuery.list(TaskModel.class),
+//                success -> {
+//                    Log.i(TAG, "Task read successfully!");
+//                    for (TaskModel databaseTaskModel : success.getData()) {
+//                        taskModelsList.add(databaseTaskModel);
+//                    }
+//                    System.out.println(taskModelsList);
+//                },
+//                failure -> Log.e(TAG, "FAILED to read task from the Database" + failure)
+//
+//        );
 
 //             HARDCODED TEST for recyclerView
 //            taskModelsList = new ArrayList<>();
