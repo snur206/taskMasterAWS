@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 //                    .state(TaskStateEnum.NEW)
 //                    .build();
 //            taskModelsList.add(newTask);
+        
 
             Button addTaskButton = (Button) findViewById(R.id.mainActivityAddTaskBtn);
 
