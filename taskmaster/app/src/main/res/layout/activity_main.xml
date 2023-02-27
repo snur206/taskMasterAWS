@@ -69,10 +69,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/MainActivityRecyclerViewTaskModel"
-        android:layout_width="405dp"
+        android:layout_width="105dp"
         android:layout_height="310dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="324dp"
+        android:layout_marginStart="116dp"
+        android:layout_marginTop="328dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
