@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amplifyframework.api.graphql.model.ModelQuery;
+import com.amplifyframework.auth.AuthUserAttributeKey;
+import com.amplifyframework.auth.options.AuthSignUpOptions;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.TaskModel;
 import com.snur206.taskmaster.R;
@@ -40,30 +42,6 @@ public class MainActivity extends AppCompatActivity {
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
-
-
-//        Amplify.API.query(
-//                ModelQuery.list(TaskModel.class),
-//                success -> {
-//                    Log.i(TAG, "Task read successfully!");
-//                    for (TaskModel databaseTaskModel : success.getData()) {
-//                        taskModelsList.add(databaseTaskModel);
-//                    }
-//                    System.out.println(taskModelsList);
-//                },
-//                failure -> Log.e(TAG, "FAILED to read task from the Database" + failure)
-//
-//        );
-
-//             HARDCODED TEST for recyclerView
-//            taskModelsList = new ArrayList<>();
-//            TaskModel newTask = TaskModel.builder()
-//                    .name("Lab")
-//                    .description("Lab for AWS")
-//                    .state(TaskStateEnum.NEW)
-//                    .build();
-//            taskModelsList.add(newTask);
-        
 
             Button addTaskButton = (Button) findViewById(R.id.mainActivityAddTaskBtn);
 
@@ -90,6 +68,37 @@ public class MainActivity extends AppCompatActivity {
 
 
         setUpRecyclerView();
+
+//        Amplify.Auth.signUp(
+//                "snur206@yahoo.com",
+//                "p@ssword",
+//                AuthSignUpOptions.builder()
+//                        .userAttribute(AuthUserAttributeKey.email(), "snur206@yahoo.com")
+//                        .userAttribute(AuthUserAttributeKey.nickname(), "snur206")
+//                        .build(),
+//                success -> Log.i(TAG, "Successful Sign Up!"),
+//                failure -> Log.e(TAG, "Sign up fail with email:" + failure)
+//                );
+
+//        Amplify.Auth.confirmSignUp(
+//                "snur206@yahoo.com",
+//                "364010",
+//                success -> Log.i(TAG, "Confirmed Sign Up!"),
+//                failure -> Log.e(TAG, "Confirm sign up fail with email:" + failure)
+//        );
+
+        Amplify.Auth.signIn(
+                "snur206@yahoo.com",
+                "p@ssword",
+                success -> Log.i(TAG, "Confirmed Sign In!"),
+                failure -> Log.e(TAG, "Confirm sign in fail with email:" + failure)
+        );
+
+        Amplify.Auth.fetchAuthSession(
+                success -> Log.i(TAG, "Current AUTH SESS" + success),
+                failure -> Log.e(TAG, "Failed to fetch AUTH SESS" + failure)
+        );
+
         }
 
     public void setUpRecyclerView(){
