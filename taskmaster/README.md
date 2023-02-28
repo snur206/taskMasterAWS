@@ -41,3 +41,6 @@ Able to select a team when adding a task and in the settings you select the team
 ![Setting Team Select](screenshots/chooseTeam.png)
 ![Add Task Team Select](screenshots/selectTeamTask.png)
 ![Filtered Task](screenshots/FilterTeamTask.png)
+
+# Lab 34
+Notes Play deployment, completed the internal testing, added aab there and gave release notes. 
