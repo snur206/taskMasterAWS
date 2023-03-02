@@ -29,6 +29,9 @@ import com.snur206.taskmaster.activities.authActivities.SignUpActivity;
 import com.snur206.taskmaster.adapter.TaskRecyclerViewAdapter;
 
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -71,10 +74,27 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(goToUserSettingsIntent);
             });
 
-
-
         setupButtons();
         setUpRecyclerView();
+
+
+        File exampleFile = new File(getApplicationContext().getFilesDir(), "ExampleKey");
+
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(exampleFile));
+                writer.append("Example file contents");
+                writer.close();
+            } catch (Exception exception) {
+                Log.e("MyAmplifyApp", "Upload failed", exception);
+            }
+
+            Amplify.Storage.uploadFile(
+                    "ExampleKey",
+                    exampleFile,
+                    success -> Log.i(TAG, "File uploaded to S3"),
+                    failure -> Log.e(TAG,"FAILED to upload file" + failure)
+            );
+
 
     }
 
