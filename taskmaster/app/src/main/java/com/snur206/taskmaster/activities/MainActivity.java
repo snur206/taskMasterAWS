@@ -11,22 +11,27 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amplifyframework.api.graphql.model.ModelQuery;
+import com.amplifyframework.auth.AuthUser;
 import com.amplifyframework.auth.AuthUserAttributeKey;
 import com.amplifyframework.auth.options.AuthSignUpOptions;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.TaskModel;
 import com.snur206.taskmaster.R;
+import com.snur206.taskmaster.activities.authActivities.LoginActivity;
+import com.snur206.taskmaster.activities.authActivities.SignUpActivity;
 import com.snur206.taskmaster.adapter.TaskRecyclerViewAdapter;
 
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "mainActivity";
@@ -67,39 +72,11 @@ public class MainActivity extends AppCompatActivity {
             });
 
 
+
+        setupButtons();
         setUpRecyclerView();
 
-//        Amplify.Auth.signUp(
-//                "snur206@yahoo.com",
-//                "p@ssword",
-//                AuthSignUpOptions.builder()
-//                        .userAttribute(AuthUserAttributeKey.email(), "snur206@yahoo.com")
-//                        .userAttribute(AuthUserAttributeKey.nickname(), "snur206")
-//                        .build(),
-//                success -> Log.i(TAG, "Successful Sign Up!"),
-//                failure -> Log.e(TAG, "Sign up fail with email:" + failure)
-//                );
-
-//        Amplify.Auth.confirmSignUp(
-//                "snur206@yahoo.com",
-//                "364010",
-//                success -> Log.i(TAG, "Confirmed Sign Up!"),
-//                failure -> Log.e(TAG, "Confirm sign up fail with email:" + failure)
-//        );
-
-        Amplify.Auth.signIn(
-                "snur206@yahoo.com",
-                "p@ssword",
-                success -> Log.i(TAG, "Confirmed Sign In!"),
-                failure -> Log.e(TAG, "Confirm sign in fail with email:" + failure)
-        );
-
-        Amplify.Auth.fetchAuthSession(
-                success -> Log.i(TAG, "Current AUTH SESS" + success),
-                failure -> Log.e(TAG, "Failed to fetch AUTH SESS" + failure)
-        );
-
-        }
+    }
 
     public void setUpRecyclerView(){
         taskModelsList = new ArrayList<>();
@@ -110,6 +87,41 @@ public class MainActivity extends AppCompatActivity {
         taskModelRecyclerView.setAdapter(adapter);
 
 
+    }
+
+    public void setupButtons() {
+
+        AtomicReference<String> username = new AtomicReference<>("");
+        // we need to get access to current auth user
+        Amplify.Auth.getCurrentUser(
+                success ->  {
+                    Log.i(TAG, "Got current user");
+                    username.set(success.getUsername());
+                },
+                failure -> {}
+        );
+
+        if (username.toString().equals("")) {
+            ((Button) findViewById(R.id.MainActivitySignUpBtn)).setVisibility(View.VISIBLE);
+            ((Button) findViewById(R.id.MainActivityLoginBtn)).setVisibility(View.VISIBLE);
+        } else {
+            ((Button)findViewById(R.id.MainActivitySignUpBtn)).setVisibility(View.INVISIBLE);
+            ((Button)findViewById(R.id.MainActivityLoginBtn)).setVisibility(View.INVISIBLE);
+        }
+
+        // login button
+        findViewById(R.id.MainActivityLoginBtn).setOnClickListener(v -> {
+            Intent goToLoginActivityIntent = new Intent(this, LoginActivity.class);
+            startActivity(goToLoginActivityIntent);
+        });
+
+        // sign up button
+        findViewById(R.id.MainActivitySignUpBtn).setOnClickListener(v -> {
+            Intent goToSignUpActivityIntent = new Intent(this, SignUpActivity.class);
+            startActivity(goToSignUpActivityIntent);
+        });
+
+        // logout button
     }
 
     @Override

@@ -16,13 +16,13 @@
         android:theme="@style/Theme.TaskMaster"
         tools:targetApi="31">
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.authActivities.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".VerifySignUpActivity"
+            android:name=".activities.authActivities.VerifySignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUpActivity"
+            android:name=".activities.authActivities.SignUpActivity"
             android:exported="false" />
         <activity
             android:name=".activities.TaskDetails"

@@ -53,4 +53,6 @@
     <string name="LoginEmailTV">Email</string>
     <string name="Loginps">Password</string>
     <string name="LoginPassword">Password</string>
+    <string name="MainActLogin">Login</string>
+    <string name="SignupMain">Sign Up</string>
 </resources>

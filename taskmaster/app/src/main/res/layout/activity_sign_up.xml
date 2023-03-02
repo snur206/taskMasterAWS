@@ -19,7 +19,7 @@
     <EditText
         android:id="@+id/SignUpActivityEmail"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="152dp"
         android:ems="10"
@@ -31,7 +31,7 @@
     <EditText
         android:id="@+id/SignUpActivityPassword"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="72dp"
         android:ems="10"

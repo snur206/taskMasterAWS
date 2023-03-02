@@ -44,3 +44,12 @@ Able to select a team when adding a task and in the settings you select the team
 
 # Lab 34
 Notes Play deployment, completed the internal testing, added aab there and gave release notes. 
+
+# Lab 36
+Able to sign up, give a verification code from the email used, login, and logout.
+![New Homepage](screenshots/NewSplashPage.png)
+![Sign Up](screenshots/signUp.png)
+![Verification Code](screenshots/verification.png)
+![Login](screenshots/Login.png)
+
+
