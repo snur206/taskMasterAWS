@@ -1,7 +1,14 @@
 package com.snur206.taskmaster.activities;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +16,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +30,8 @@ import com.amplifyframework.datastore.generated.model.Team;
 import com.snur206.taskmaster.R;
 
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,29 +45,18 @@ public class AddTaskActivity extends AppCompatActivity {
     CompletableFuture<List<Team>> teamFuture = new CompletableFuture<>();
     ArrayList<String> teamNames;
     ArrayList<Team> team;
+    ActivityResultLauncher<Intent> activityResultLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
+
+        activityResultLauncher = getImagePickingActivityResultLauncher();
         taskStateSpinner = findViewById(R.id.taskStateSpinner);
         teamSpinner = findViewById(R.id.AddTaskActivityTeamSpinner);
         teamNames = new ArrayList<>();
         team = new ArrayList<>();
 
-//        Team teamA = Team.builder()
-//                .name("A")
-//                .build();
-//        Team teamB = Team.builder()
-//                .name("B")
-//                .build();
-//        Team teamC = Team.builder()
-//                .name("C")
-//                .build();
-//        Amplify.API.mutate(
-//                ModelMutation.create(teamA),
-//                success -> Log.i("Success", "Successfully created team!"),
-//                failure -> Log.e("Failure", "FAILED" + failure)
-//        );
 
         // Completable Future
         Amplify.API.query(
@@ -79,6 +78,7 @@ public class AddTaskActivity extends AppCompatActivity {
 
         setupSpinners();
         setupSaveBtn();
+        setUpAddImgBtn();
 
         Button addTaskButton = (Button) findViewById(R.id.addTaskActivityBtn);
 
@@ -124,4 +124,78 @@ public class AddTaskActivity extends AppCompatActivity {
             Toast.makeText(this, "Task Added!", Toast.LENGTH_SHORT).show();
         });
     }
+
+    public void saveTask(){
+        String selectedTeamStringName = taskStateSpinner.getSelectedItem().toString();
+        try {
+            team = (ArrayList<Team>) teamFuture.get();
+        } catch (InterruptedException | ExecutionException ie) {
+            ie.printStackTrace();
+        }
+
+        Team selectedTeam = team.stream().filter(team -> team.getName().equals(selectedTeamStringName)).findAny().orElseThrow(RuntimeException::new);
+
+
+    }
+
+    public void setUpAddImgBtn() {
+        // on click listener -> launch the img picking intent
+        findViewById(R.id.AddTaskActivityAddImgPicker).setOnClickListener(v -> {
+            launchImageSelectionIntent();
+        });
+    }
+
+    public void launchImageSelectionIntent(){
+        // OnActivityResult
+        Intent imageFilePickingIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        imageFilePickingIntent.setType("*/*");
+        imageFilePickingIntent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/jpeg", "image/png"});
+        activityResultLauncher.launch(imageFilePickingIntent);
+    }
+
+    private ActivityResultLauncher<Intent> getImagePickingActivityResultLauncher(){
+        ActivityResultLauncher<Intent> imagePickingActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        Uri pickedImageFileUri = result.getData().getData();
+                        try {
+                            InputStream pickedImageInputStream = getContentResolver().openInputStream(pickedImageFileUri);
+                            String pickedImageFileName = getFileNameFromUri(pickedImageFileUri);
+                            Log.i(TAG, "Successfully got the image: " + pickedImageFileName);
+                            uploadInputStreamToS3(pickedImageInputStream, pickedImageFileName, pickedImageFileUri);
+                        } catch (FileNotFoundException fnfe) {
+                            Log.e(TAG, "Could not get file from picker! " + fnfe);
+
+                        }
+                    }
+                }
+        );
+        return imagePickingActivityResultLauncher;
+    }
+
+    public void uploadInputStreamToS3(InputStream pickedImageInputStream, String pickedImageFileName, Uri pickedImageFileUri){
+        // upload to S3
+        Amplify.Storage.uploadInputStream(
+                pickedImageFileName,
+                pickedImageInputStream,
+                success -> {
+                    Log.i(TAG, "SUCCESS! Uploaded file to S3! Filename is: " + success.getKey());
+                    s3ImageKey = pickedImageFileName;
+                    ImageView taskImageView = findViewById(R.id.AddTaskActivityAddImgPicker);
+                    InputStream pickedImageInputStreamCopy = null;
+                    try {
+                        pickedImageInputStreamCopy = getContentResolver().openInputStream(pickedImageFileUri);
+                    } catch (FileNotFoundException fnfe) {
+                        Log.e(TAG, "Could not get file stream from URI! " + fnfe.getMessage(), fnfe);
+                    }
+                    taskImageView.setImageBitmap(BitmapFactory.decodeStream(pickedImageInputStreamCopy));
+                },
+                failure -> Log.e(TAG, "FAILED to upload file to S3 with filename: " + pickedImageFileName + " with error: " + failure)
+
+        );
+    }
+
+
 }
