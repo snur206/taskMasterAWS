@@ -6,11 +6,14 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -40,6 +43,7 @@ import java.util.concurrent.ExecutionException;
 
 public class AddTaskActivity extends AppCompatActivity {
     public final static String TAG = "AddTaskActivity";
+    private String s3ImageKey = "";
     Spinner taskStateSpinner;
     Spinner teamSpinner;
     CompletableFuture<List<Team>> teamFuture = new CompletableFuture<>();
@@ -100,6 +104,12 @@ public class AddTaskActivity extends AppCompatActivity {
 
     public void setupSaveBtn(){
         findViewById(R.id.addTaskActivityBtn).setOnClickListener(v -> {
+            saveTask();
+        });
+    }
+
+    public void saveTask(){
+        findViewById(R.id.addTaskActivityBtn).setOnClickListener(v -> {
             String selectedTeamStringName = teamSpinner.getSelectedItem().toString();
             try {
                 team = (ArrayList<Team>) teamFuture.get();
@@ -113,6 +123,7 @@ public class AddTaskActivity extends AppCompatActivity {
                     .state((TaskStateEnum) taskStateSpinner.getSelectedItem())
                     .description(((EditText) findViewById(R.id.addTaskActivityTaskDecriptionEdit)).getText().toString())
                     .team(selectedTeam)
+                    .s3ImageKey(s3ImageKey)
                     .build();
 
             Amplify.API.mutate(
@@ -123,18 +134,6 @@ public class AddTaskActivity extends AppCompatActivity {
 //            taskMasterDatabase.taskDao().insertTask(newTaskModel);
             Toast.makeText(this, "Task Added!", Toast.LENGTH_SHORT).show();
         });
-    }
-
-    public void saveTask(){
-        String selectedTeamStringName = taskStateSpinner.getSelectedItem().toString();
-        try {
-            team = (ArrayList<Team>) teamFuture.get();
-        } catch (InterruptedException | ExecutionException ie) {
-            ie.printStackTrace();
-        }
-
-        Team selectedTeam = team.stream().filter(team -> team.getName().equals(selectedTeamStringName)).findAny().orElseThrow(RuntimeException::new);
-
 
     }
 
@@ -193,8 +192,29 @@ public class AddTaskActivity extends AppCompatActivity {
                     taskImageView.setImageBitmap(BitmapFactory.decodeStream(pickedImageInputStreamCopy));
                 },
                 failure -> Log.e(TAG, "FAILED to upload file to S3 with filename: " + pickedImageFileName + " with error: " + failure)
-
         );
+    }
+    @SuppressLint("Range")
+    public String getFileNameFromUri(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
     }
 
 

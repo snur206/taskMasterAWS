@@ -36,4 +36,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/TaskDetailsTVBody" />
 
+    <ImageView
+        android:id="@+id/taskDetailsActivityImage"
+        android:layout_width="185dp"
+        android:layout_height="162dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginBottom="328dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/amplify_storage_transfer_notification_icon" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

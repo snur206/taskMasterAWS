@@ -45,11 +45,18 @@ public class MainActivity extends AppCompatActivity {
 
     //    public final String TAG = "MainActivity";
     public static final String TASK_INPUT_EXTRA_TAG = "userTask";
+    AuthUser authUser;
+    Button loginButton;
+    Button signupButton;
+    Button logoutButton;
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
+            loginButton = findViewById(R.id.MainActivityLoginBtn);
+            signupButton = findViewById(R.id.MainActivitySignUpBtn);
+            logoutButton = findViewById(R.id.MainActivityLogoutBtn);
 
             Button addTaskButton = (Button) findViewById(R.id.mainActivityAddTaskBtn);
 
@@ -78,22 +85,22 @@ public class MainActivity extends AppCompatActivity {
         setUpRecyclerView();
 
 
-        File exampleFile = new File(getApplicationContext().getFilesDir(), "ExampleKey");
-
-            try {
-                BufferedWriter writer = new BufferedWriter(new FileWriter(exampleFile));
-                writer.append("Example file contents");
-                writer.close();
-            } catch (Exception exception) {
-                Log.e("MyAmplifyApp", "Upload failed", exception);
-            }
-
-            Amplify.Storage.uploadFile(
-                    "ExampleKey",
-                    exampleFile,
-                    success -> Log.i(TAG, "File uploaded to S3"),
-                    failure -> Log.e(TAG,"FAILED to upload file" + failure)
-            );
+//        File exampleFile = new File(getApplicationContext().getFilesDir(), "ExampleKey");
+//
+//            try {
+//                BufferedWriter writer = new BufferedWriter(new FileWriter(exampleFile));
+//                writer.append("Example file contents");
+//                writer.close();
+//            } catch (Exception exception) {
+//                Log.e("MyAmplifyApp", "Upload failed", exception);
+//            }
+//
+//            Amplify.Storage.uploadFile(
+//                    "ExampleKey",
+//                    exampleFile,
+//                    success -> Log.i(TAG, "File uploaded to S3"),
+//                    failure -> Log.e(TAG,"FAILED to upload file" + failure)
+//            );
 
 
     }
@@ -111,23 +118,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void setupButtons() {
 
-        AtomicReference<String> username = new AtomicReference<>("");
+//        AtomicReference<String> username = new AtomicReference<>("");
         // we need to get access to current auth user
-        Amplify.Auth.getCurrentUser(
-                success ->  {
-                    Log.i(TAG, "Got current user");
-                    username.set(success.getUsername());
-                },
-                failure -> {}
-        );
 
-        if (username.toString().equals("")) {
-            ((Button) findViewById(R.id.MainActivitySignUpBtn)).setVisibility(View.VISIBLE);
-            ((Button) findViewById(R.id.MainActivityLoginBtn)).setVisibility(View.VISIBLE);
-        } else {
-            ((Button)findViewById(R.id.MainActivitySignUpBtn)).setVisibility(View.INVISIBLE);
-            ((Button)findViewById(R.id.MainActivityLoginBtn)).setVisibility(View.INVISIBLE);
-        }
+
+//        if (username.toString().equals("")) {
+//            ((Button) findViewById(R.id.MainActivitySignUpBtn)).setVisibility(View.VISIBLE);
+//            ((Button) findViewById(R.id.MainActivityLoginBtn)).setVisibility(View.VISIBLE);
+//        } else {
+//            ((Button)findViewById(R.id.MainActivitySignUpBtn)).setVisibility(View.INVISIBLE);
+//            ((Button)findViewById(R.id.MainActivityLoginBtn)).setVisibility(View.INVISIBLE);
+//        }
 
         // login button
         findViewById(R.id.MainActivityLoginBtn).setOnClickListener(v -> {
@@ -142,6 +143,24 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // logout button
+        logoutButton.setOnClickListener(v -> {
+            Amplify.Auth.signOut(
+                    success -> {
+                        Log.i(TAG, "User successfully logged out.");
+                        authUser = null;
+                        runOnUiThread(this::renderButtons);
+    });
+        });
+    }
+
+    public void renderButtons(){
+        if(authUser != null) {
+            logoutButton.setVisibility(View.VISIBLE);
+        } else if (authUser == null) {
+            signupButton.setVisibility(View.VISIBLE);
+            loginButton.setVisibility(View.VISIBLE);
+            logoutButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -169,6 +188,19 @@ public class MainActivity extends AppCompatActivity {
                 failure -> Log.e(TAG, "FAILED to read task from the Database" + failure)
         );
 //        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        Amplify.Auth.getCurrentUser(
+                success ->  {
+                    Log.i(TAG, "Got current user");
+                    authUser = success;
+                    runOnUiThread(this::renderButtons);
+                },
+                failure -> {
+                    Log.w(TAG, "There is no current authenticated User");
+                    authUser = null;
+                    runOnUiThread(this::renderButtons);
+                }
+        );
 
         String username = preferences.getString(USER_NAME_TAG, "No Username");
         ((TextView)findViewById(R.id.mainActivityTaskMasterTextView)).setText(username);
