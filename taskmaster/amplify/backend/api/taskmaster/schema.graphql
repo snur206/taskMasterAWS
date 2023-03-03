@@ -15,6 +15,7 @@ type TaskModel @model @auth(rules: [{allow: public}]) {
     state: TaskStateEnum
     description: String
     team: Team @belongsTo(fields: ["teamId"])
+    s3ImageKey: String
 }
 
 enum TaskStateEnum {

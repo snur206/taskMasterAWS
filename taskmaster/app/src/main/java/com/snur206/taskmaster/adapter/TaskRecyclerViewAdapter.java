@@ -21,6 +21,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
     public static final String TASK_TITLE_TAG = "task_title";
     public static final String TASK_BODY_TAG = "task_body";
     public static final String TASK_STATE_TAG = "task_state";
+    public static final String TASK_IMAGE_KEY_TAG = "task_image_key";
 
 
     // TODO: Step 3-2: Context callingActivity called at the top
@@ -62,6 +63,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
         taskViewHolder.setOnClickListener(v -> {
             Intent goToTaskDetailsIntent = new Intent(callingActivity, TaskDetails.class);
             goToTaskDetailsIntent.putExtra(TASK_TITLE_TAG, taskTitle.getName());
+            goToTaskDetailsIntent.putExtra(TASK_IMAGE_KEY_TAG, taskTitle.getS3ImageKey());
 //            goToTaskDetailsIntent.putExtra(TASK_BODY_TAG, taskBodyList);
             goToTaskDetailsIntent.putExtra(TASK_STATE_TAG, taskState);
             callingActivity.startActivity(goToTaskDetailsIntent);
