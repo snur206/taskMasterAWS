@@ -52,4 +52,13 @@ Able to sign up, give a verification code from the email used, login, and logout
 ![Verification Code](screenshots/verification.png)
 ![Login](screenshots/Login.png)
 
+# Lab 37
+Able to add photos to tasks through add task page.
+
+
+# Lab 39
+Able to get location updates
+
+
+
 
