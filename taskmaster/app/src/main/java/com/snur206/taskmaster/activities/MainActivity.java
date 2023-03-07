@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amplifyframework.analytics.AnalyticsEvent;
 import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.auth.AuthUser;
 import com.amplifyframework.auth.AuthUserAttributeKey;
@@ -31,8 +33,14 @@ import com.snur206.taskmaster.adapter.TaskRecyclerViewAdapter;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -49,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     Button loginButton;
     Button signupButton;
     Button logoutButton;
+    private final MediaPlayer mp = new MediaPlayer();
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +66,21 @@ public class MainActivity extends AppCompatActivity {
             loginButton = findViewById(R.id.MainActivityLoginBtn);
             signupButton = findViewById(R.id.MainActivitySignUpBtn);
             logoutButton = findViewById(R.id.MainActivityLogoutBtn);
+
+        int dateNow = new Date().getDate();
+
+        AnalyticsEvent appStartedEvent = AnalyticsEvent.builder()
+                .name("App started!")
+                .addProperty("Username", "snur206")
+                .addProperty("TimeOfLaunch", dateNow)
+                .build();
+        Amplify.Analytics.recordEvent(appStartedEvent);
+
+        Amplify.Predictions.convertTextToSpeech(
+                "I like to eat spaghetti",
+                result -> playAudio(result.getAudioData()),
+                error -> Log.e("MyAmplifyApp", "Conversion failed", error)
+        );
 
             Button addTaskButton = (Button) findViewById(R.id.mainActivityAddTaskBtn);
 
@@ -81,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(goToUserSettingsIntent);
             });
 
+
+
         setupButtons();
         setUpRecyclerView();
 
@@ -101,8 +127,24 @@ public class MainActivity extends AppCompatActivity {
 //                    success -> Log.i(TAG, "File uploaded to S3"),
 //                    failure -> Log.e(TAG,"FAILED to upload file" + failure)
 //            );
+    }
 
+    private void playAudio(InputStream data) {
+        File mp3File = new File(getCacheDir(), "audio.mp3");
 
+        try (OutputStream out = new FileOutputStream(mp3File)) {
+            byte[] buffer = new byte[8 * 1_024];
+            int bytesRead;
+            while ((bytesRead = data.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+            mp.reset();
+            mp.setOnPreparedListener(MediaPlayer::start);
+            mp.setDataSource(new FileInputStream(mp3File).getFD());
+            mp.prepareAsync();
+        } catch (IOException error) {
+            Log.e("MyAmplifyApp", "Error writing audio file", error);
+        }
     }
 
     public void setUpRecyclerView(){
