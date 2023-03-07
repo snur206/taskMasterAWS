@@ -64,4 +64,5 @@ Able to get location updates
 
 
 # Lab 41
-
+Adding predictions/text to speech and Pinpoint Analytics. Being able to install this reminds me of all the ways tech can change the landscape of society where it is able to help those with disabilities. 
+![Lab 41](screenshots/t2s.png)
