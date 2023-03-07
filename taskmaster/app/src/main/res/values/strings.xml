@@ -56,4 +56,5 @@
     <string name="MainActLogin">Login</string>
     <string name="SignupMain">Sign Up</string>
     <string name="logoutbtn">Logout</string>
+    <string name="location">Location</string>
 </resources>
