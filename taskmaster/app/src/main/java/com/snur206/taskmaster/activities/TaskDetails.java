@@ -24,6 +24,7 @@ public class TaskDetails extends AppCompatActivity {
     String taskBody;
     String taskState;
     String taskImageKey = null;
+    String taskLocation = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,10 +53,11 @@ public class TaskDetails extends AppCompatActivity {
             taskBody = callingIntent.getStringExtra(TaskRecyclerViewAdapter.TASK_BODY_TAG);
             taskState = callingIntent.getStringExtra(TaskRecyclerViewAdapter.TASK_STATE_TAG);
             taskImageKey = callingIntent.getStringExtra(TaskRecyclerViewAdapter.TASK_IMAGE_KEY_TAG);
-
+            taskLocation = callingIntent.getStringExtra(TaskRecyclerViewAdapter.TASK_LOCATION_KEY_TAG);
         }
         ((TextView) findViewById(R.id.TaskDetailsTVTitle)).setText(taskTitle);
         ((TextView) findViewById(R.id.TaskDetailsTVBody)).setText(taskBody);
         ((TextView) findViewById(R.id.TaskDetailsTVState)).setText(taskState);
+        ((TextView) findViewById(R.id.taskDetailsActivityLocation)).setText(taskLocation);
     }
 }

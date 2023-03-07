@@ -156,6 +156,8 @@ public class MainActivity extends AppCompatActivity {
     public void renderButtons(){
         if(authUser != null) {
             logoutButton.setVisibility(View.VISIBLE);
+            signupButton.setVisibility(View.INVISIBLE);
+            loginButton.setVisibility(View.INVISIBLE);
         } else if (authUser == null) {
             signupButton.setVisibility(View.VISIBLE);
             loginButton.setVisibility(View.VISIBLE);
@@ -166,6 +168,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.e(TAG, "OnResume Runs");
+        Amplify.Auth.getCurrentUser(
+                success ->  {
+                    Log.i(TAG, "Got current user");
+                    authUser = success;
+                    runOnUiThread(this::renderButtons);
+                },
+                failure -> {
+                    Log.w(TAG, "There is no current authenticated User");
+                    authUser = null;
+                    runOnUiThread(this::renderButtons);
+                }
+        );
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String selectedTeam = preferences.getString(Select_Team_TAG, "No team chosen");
 
@@ -189,18 +205,7 @@ public class MainActivity extends AppCompatActivity {
         );
 //        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        Amplify.Auth.getCurrentUser(
-                success ->  {
-                    Log.i(TAG, "Got current user");
-                    authUser = success;
-                    runOnUiThread(this::renderButtons);
-                },
-                failure -> {
-                    Log.w(TAG, "There is no current authenticated User");
-                    authUser = null;
-                    runOnUiThread(this::renderButtons);
-                }
-        );
+
 
         String username = preferences.getString(USER_NAME_TAG, "No Username");
         ((TextView)findViewById(R.id.mainActivityTaskMasterTextView)).setText(username);

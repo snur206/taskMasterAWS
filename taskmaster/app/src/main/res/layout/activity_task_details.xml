@@ -46,4 +46,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/amplify_storage_transfer_notification_icon" />
 
+    <TextView
+        android:id="@+id/taskDetailsActivityLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="160dp"
+        android:layout_marginTop="176dp"
+        android:text="@string/location"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/taskDetailsActivityImage" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

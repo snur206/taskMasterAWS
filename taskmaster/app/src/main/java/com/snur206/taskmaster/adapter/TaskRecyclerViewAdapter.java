@@ -22,6 +22,8 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
     public static final String TASK_BODY_TAG = "task_body";
     public static final String TASK_STATE_TAG = "task_state";
     public static final String TASK_IMAGE_KEY_TAG = "task_image_key";
+    public static final String TASK_LOCATION_KEY_TAG = "task_location_key";
+
 
 
     // TODO: Step 3-2: Context callingActivity called at the top
